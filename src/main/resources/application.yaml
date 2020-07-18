@@ -1,0 +1,13 @@
+app:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/cases
+    username: breezy
+    password: delta5000
+    pool-size: 30
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
