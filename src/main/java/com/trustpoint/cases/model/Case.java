@@ -40,8 +40,6 @@ public class Case extends Model {
 
     @NotEmpty(message = "owner cannot be empty")
     @Email()
-    // case owner is not expected to be sent with request. owner will be automatically picked from
-    // request subject header
     private String owner;
 
     private String businessUnit = "";
