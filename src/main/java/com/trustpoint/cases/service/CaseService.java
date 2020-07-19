@@ -35,7 +35,8 @@ public class CaseService {
                 newcase.getOriginalBusinessUnit(),
                 newcase.getState(),
                 newcase.getInternalReferenceCode(),
-                newcase.getRelatedCaseID()
+                newcase.getRelatedCaseID(),
+                newcase.getCustomer()
         ));
     }
 

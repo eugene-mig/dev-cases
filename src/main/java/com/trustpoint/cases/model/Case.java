@@ -11,7 +11,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "Case")
@@ -36,7 +38,7 @@ public class Case extends Model {
 
     private Step step;
 
-    @NotEmpty(message = "Case owner cannot be empty")
+    @NotEmpty(message = "owner cannot be empty")
     @Email()
     // case owner is not expected to be sent with request. owner will be automatically picked from
     // request subject header
@@ -52,16 +54,21 @@ public class Case extends Model {
 
     private String relatedCaseID = "";
 
-    //    @OneToMany
-    //    private List<String> customers;
+    @NotEmpty
+    private String customer;
 
-    // Link to notes table
-    // Link to attachments table
-    // Link to alerts table
+    @OneToMany(mappedBy = "caseID")
+    private List<Attachment> attachments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "caseID")
+    private List<Note> notes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "caseID")
+    private List<Alert> alerts = new ArrayList<>();
 
     public Case() {}
 
-    public Case(@NotBlank(message = "Case name cannot be empty") String name, @NotEmpty(message = "Case type cannot be empty") CaseType type, Date openingDate, Priority priority, String description, Step step, @NotEmpty(message = "Case owner cannot be empty") String owner, String businessUnit, String originalBusinessUnit, CaseState state, String internalReferenceCode, String relatedCaseID) {
+    public Case(@NotBlank(message = "Case name cannot be empty") String name, @NotEmpty(message = "Case type cannot be empty") CaseType type, Date openingDate, Priority priority, String description, Step step, @NotEmpty(message = "Case owner cannot be empty") String owner, String businessUnit, String originalBusinessUnit, CaseState state, String internalReferenceCode, String relatedCaseID, String customer) {
         if (openingDate != null) {
             this.openingDate = openingDate;
         } else {
@@ -85,6 +92,7 @@ public class Case extends Model {
         this.relatedCaseID = relatedCaseID;
         this.name = name;
         this.type = type;
+        this.customer = customer;
     }
 
     public UUID getId() {
@@ -191,11 +199,19 @@ public class Case extends Model {
         this.relatedCaseID = relatedCaseID;
     }
 
-//    public List<String> getCustomers() {
-//        return customers;
-//    }
+    public String getCustomer() {
+        return customer;
+    }
 
-//    public void setCustomers(List<String> customers) {
-//        this.customers = customers;
-//    }
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,8 @@ public class CaseController {
     }
 
     @PostMapping
-    public Case addCase(@Valid @NotNull @RequestBody Case newcase) {
+    public Case addCase(@Valid @NotNull @RequestBody Case newcase, @NotEmpty @RequestHeader(value = "X-Subject") String owner) {
+        newcase.setOwner(owner);
         return caseService.addCase(newcase);
     }
 
