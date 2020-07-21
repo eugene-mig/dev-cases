@@ -30,10 +30,10 @@ public class NoteController {
     @GetMapping("notes")
     public List<Note> getNotes(@RequestParam(value = "case_id", required = false) UUID caseID) {
         if (caseID != null) {
-            return noteService.getNotes();
+            return noteService.getNotesByCaseID(caseID);
         }
 
-        return noteService.getNotesByCaseID(caseID);
+        return noteService.getNotes();
     }
 
     @DeleteMapping(path = "notes/{id}")

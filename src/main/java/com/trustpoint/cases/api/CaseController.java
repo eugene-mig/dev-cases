@@ -24,7 +24,7 @@ public class CaseController {
     }
 
     @PostMapping
-    public Case addCase(@Valid @NotNull @RequestBody Case newcase, @NotEmpty @RequestHeader(value = "X-Subject") String owner) {
+    public Case addCase(@Valid @NotNull @RequestBody Case newcase, @NotEmpty @RequestHeader("X-Subject") String owner) {
         newcase.setOwner(owner);
         return caseService.addCase(newcase);
     }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping(path = "alerts")
 public class AlertController {
     private AlertService alertService;
 
@@ -17,18 +18,18 @@ public class AlertController {
         this.alertService = alertService;
     }
 
-    @PostMapping("alerts")
+    @PostMapping
     public Alert addAlert(@NotNull @RequestBody Alert alert) {
         return alertService.addAlert(alert);
     }
 
-    @GetMapping("cases")
+    @GetMapping
     public List<Alert> ListAlert(@RequestParam("case_id") UUID caseID) {
         return alertService.getAlertsByCaseID(caseID);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteAlert(@RequestParam UUID alertID) {
+    @DeleteMapping(path = "{alertID}")
+    public ResponseEntity<?> deleteAlert(@PathVariable("alertID") UUID alertID) {
         return alertService.deleteAlert(alertID);
     }
 }

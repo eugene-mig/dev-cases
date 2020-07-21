@@ -29,8 +29,8 @@ public class CaseServiceTest {
         newCase.setOwner("fanky5g@gmail.com");
         newCase.setPriority(Priority.HIGH);
         newCase.setState(CaseState.CREATED);
-        newCase.setOriginalBusinessUnit("business-unit");
-        newCase.setBusinessUnit("business-unit");
+        newCase.setOriginalBusinessUnit(0L);
+        newCase.setBusinessUnit(0L);
         newCase.setDescription("customer stole some cars");
 
         Case createdCase = caseService.addCase(newCase);

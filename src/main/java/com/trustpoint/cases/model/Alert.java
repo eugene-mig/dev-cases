@@ -3,18 +3,19 @@ package com.trustpoint.cases.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Table(name = "alerts")
 public class Alert extends Model {
     @Id
     @GeneratedValue
     private UUID id;
 
-    @NotEmpty
     private UUID caseID;
 
     @NotEmpty

@@ -38,13 +38,12 @@ public class Case extends Model {
 
     private Step step;
 
-    @NotEmpty(message = "owner cannot be empty")
     @Email()
     private String owner;
 
-    private String businessUnit = "";
+    private Long businessUnit;
 
-    private String originalBusinessUnit = "";
+    private Long originalBusinessUnit;
 
     private CaseState state;
 
@@ -66,7 +65,7 @@ public class Case extends Model {
 
     public Case() {}
 
-    public Case(@NotBlank(message = "Case name cannot be empty") String name, @NotEmpty(message = "Case type cannot be empty") CaseType type, Date openingDate, Priority priority, String description, Step step, @NotEmpty(message = "Case owner cannot be empty") String owner, String businessUnit, String originalBusinessUnit, CaseState state, String internalReferenceCode, String relatedCaseID, String customer) {
+    public Case(@NotBlank(message = "Case name cannot be empty") String name, @NotEmpty(message = "Case type cannot be empty") CaseType type, Date openingDate, Priority priority, String description, Step step, @NotEmpty(message = "Case owner cannot be empty") String owner, Long businessUnit, Long originalBusinessUnit, CaseState state, String internalReferenceCode, String relatedCaseID, String customer) {
         if (openingDate != null) {
             this.openingDate = openingDate;
         } else {
@@ -157,19 +156,19 @@ public class Case extends Model {
         this.owner = owner;
     }
 
-    public String getBusinessUnit() {
+    public Long getBusinessUnit() {
         return businessUnit;
     }
 
-    public void setBusinessUnit(String businessUnit) {
+    public void setBusinessUnit(Long businessUnit) {
         this.businessUnit = businessUnit;
     }
 
-    public String getOriginalBusinessUnit() {
+    public Long getOriginalBusinessUnit() {
         return originalBusinessUnit;
     }
 
-    public void setOriginalBusinessUnit(String originalBusinessUnit) {
+    public void setOriginalBusinessUnit(Long originalBusinessUnit) {
         this.originalBusinessUnit = originalBusinessUnit;
     }
 
@@ -211,5 +210,21 @@ public class Case extends Model {
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public List<Alert> getAlerts() {
+        return alerts;
+    }
+
+    public void setAlerts(List<Alert> alerts) {
+        this.alerts = alerts;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 }

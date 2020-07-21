@@ -11,7 +11,7 @@ FROM azul/zulu-openjdk-alpine:11.0.7
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 COPY --from=builder /home/app/target target
-RUN export JAR_FILE=target/*.jar
-RUN cp ${JAR_FILE} app.jar
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
 ENV JAVA_OPTS=/opt/config/
 ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar app.jar" ]

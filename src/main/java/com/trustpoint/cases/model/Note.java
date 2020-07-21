@@ -3,12 +3,14 @@ package com.trustpoint.cases.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
+@Table(name = "notes")
 public class Note extends Model {
     @Id
     @GeneratedValue
@@ -17,7 +19,6 @@ public class Note extends Model {
     @NotEmpty
     private String body;
 
-    @NotNull
     private UUID caseID;
 
     @NotEmpty
