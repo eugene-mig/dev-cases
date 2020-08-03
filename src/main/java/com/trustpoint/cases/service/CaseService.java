@@ -1,5 +1,6 @@
 package com.trustpoint.cases.service;
 
+import com.trustpoint.cases.config.CaseConfiguration;
 import com.trustpoint.cases.exception.ResourceNotFoundException;
 import com.trustpoint.cases.model.Alert;
 import com.trustpoint.cases.model.Case;
@@ -7,26 +8,27 @@ import com.trustpoint.cases.model.Note;
 import com.trustpoint.cases.repository.AlertRepository;
 import com.trustpoint.cases.repository.CaseRepository;
 import com.trustpoint.cases.repository.NoteRepository;
+import com.trustpoint.cases.values.CaseState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CaseService {
     private final CaseRepository repository;
     private final AlertRepository alertRepository;
     private final NoteRepository noteRepository;
+    private final CaseConfiguration caseConfig;
 
     @Autowired
-    public CaseService(@Qualifier("postgres") CaseRepository repository, AlertRepository alertRepository, NoteRepository noteRepository) {
+    public CaseService(@Qualifier("postgres") CaseRepository repository, AlertRepository alertRepository, NoteRepository noteRepository, CaseConfiguration caseConfig) {
         this.repository = repository;
         this.alertRepository = alertRepository;
         this.noteRepository = noteRepository;
+        this.caseConfig = caseConfig;
     }
 
     public Case addCase(Case newcase) {
@@ -41,9 +43,9 @@ public class CaseService {
                 newcase.getDescription(),
                 newcase.getStep(),
                 newcase.getOwner(),
-                newcase.getBusinessUnit(),
+                newcase.getOriginalBusinessUnit(),//at creation business unit will be same as original business unit
                 newcase.getOriginalBusinessUnit(),
-                newcase.getState(),
+                CaseState.OPEN,
                 newcase.getInternalReferenceCode(),
                 newcase.getRelatedCaseID(),
                 newcase.getCustomer()
@@ -80,10 +82,29 @@ public class CaseService {
         return createdCase;
     }
 
-    public List<Case> getCases() {
-      return repository.findAll();
+    public List<Case> getCases(String owner, String businessUnit) {
+        if (caseConfig.allowAccessIfUnassigned()) {
+            return repository.findAll();
+        }
+
+        if (businessUnit != "") {
+            Long businessUnitID = Long.parseLong(businessUnit, 10);
+
+            if (caseConfig.caseOwnerHasAccess() && owner != "") {
+                return repository.findAllByBusinessUnitOrOwner(businessUnitID, owner);
+            }
+
+            return repository.findAllByBusinessUnit(businessUnitID);
+        }
+
+        if (caseConfig.caseOwnerHasAccess() && owner != "") {
+            return repository.findAllByOwner(owner);
+        }
+
+        return new ArrayList<>();
     };
 
+    // TODO: apply case access to delete
     public ResponseEntity<?> deleteCase (UUID id) {
         return repository.findById(id).map(found -> {
             repository.delete(found);
@@ -91,7 +112,8 @@ public class CaseService {
         }).orElseThrow(() -> new ResourceNotFoundException("Case with id " + id.toString() + " not found"));
     }
 
-    public Optional<Case> updateCase(UUID id, Case update) {
+    // TODO: apply case access to update
+    public Optional<Case> updateCase(UUID id, Case update, String user) {
         return repository.findById(id).map(found -> {
             found.setName(update.getName());
             found.setBusinessUnit(update.getBusinessUnit());
@@ -104,11 +126,31 @@ public class CaseService {
             found.setRelatedCaseID(update.getRelatedCaseID());
             found.setType(update.getType());
             found.setOriginalBusinessUnit(update.getOriginalBusinessUnit());
+            found.setClosingRemarks(update.getClosingRemarks());
+
+            if (update.getState() == CaseState.CLOSED) {
+                found.setClosedBy(user);
+                found.setClosingDate(new Date());
+            }
+
             return repository.save(found);
         });
     }
 
-    public Optional<Case> getCaseByID(UUID id) {
-        return repository.findById(id);
+    public Optional<Case> getCaseByID(UUID id, String owner, String businessUnit) {
+        if (caseConfig.allowAccessIfUnassigned()) {
+            return repository.findById(id);
+        }
+
+        if (owner != "" && caseConfig.caseOwnerHasAccess()) {
+            return repository.findByIdAndOwner(id, owner);
+        }
+
+        if (businessUnit != "") {
+            Long businessUnitID = Long.parseLong(businessUnit, 10);
+            return repository.findByIdAndBusinessUnit(id, businessUnitID);
+        }
+
+        return null;
     }
 }

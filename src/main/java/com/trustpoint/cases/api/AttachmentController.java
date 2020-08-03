@@ -22,8 +22,8 @@ public class AttachmentController {
     }
 
     @PostMapping("attachments")
-    public Attachment addAttachment(@Valid @NotNull @RequestBody Attachment attachment, @NotEmpty @RequestParam("case_id") UUID caseID, @RequestHeader(value = "X-Subject") String attachedBy) {
-        return attachmentService.addAttachment(attachment, caseID, attachedBy);
+    public Attachment addAttachment(@Valid @NotNull @RequestBody Attachment attachment, @RequestHeader(value = "X-Subject") String attachedBy) {
+        return attachmentService.addAttachment(attachment, attachedBy);
     }
 
     @DeleteMapping("attachments/{id}")

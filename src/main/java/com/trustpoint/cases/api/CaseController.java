@@ -30,8 +30,8 @@ public class CaseController {
     }
 
     @GetMapping
-    public List<Case> getCases() {
-        return caseService.getCases();
+    public List<Case> getCases(@NotEmpty @RequestHeader("X-Subject") String owner, @RequestHeader(value = "business-unit-id", required = false) String businessUnit) {
+        return caseService.getCases(owner, businessUnit);
     }
 
     @DeleteMapping(path = "{id}")
@@ -40,13 +40,13 @@ public class CaseController {
     }
 
     @GetMapping(path = "{id}")
-    public Case getPersonByID(@PathVariable("id") UUID id) {
-        return caseService.getCaseByID(id).orElse(null);
+    public Case getPersonByID(@PathVariable("id") UUID id, @NotEmpty @RequestHeader("X-Subject") String owner, @RequestHeader("business-unit-id") String businessUnit) {
+        return caseService.getCaseByID(id, owner, businessUnit).orElse(null);
     }
 
     @PutMapping(path = "{id}")
-    public Case updateCase(@PathVariable("id") UUID id, @Valid @NotNull @RequestBody Case update) {
-        return caseService.updateCase(id, update)
+    public Case updateCase(@PathVariable("id") UUID id, @Valid @NotNull @RequestBody Case update, @NotEmpty @RequestHeader("X-Subject") String user) {
+        return caseService.updateCase(id, update, user)
                 .orElseThrow(() -> new ResourceNotFoundException("Case with id " + id.toString() + " not found"));
     }
 }

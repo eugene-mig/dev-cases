@@ -1,9 +1,6 @@
 package com.trustpoint.cases.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -25,6 +22,7 @@ public class Alert extends Model {
     private Long alertID;
 
     @NotEmpty
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @NotNull

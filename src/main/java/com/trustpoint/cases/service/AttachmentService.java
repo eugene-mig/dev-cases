@@ -20,9 +20,8 @@ public class AttachmentService {
         this.repository = repository;
     }
 
-    public Attachment addAttachment(Attachment attachment, UUID caseID, String attachedBy) {
+    public Attachment addAttachment(Attachment attachment, String attachedBy) {
         attachment.setAttachedBy(attachedBy);
-        attachment.setCaseID(caseID);
 
         return repository.save(attachment);
     }

@@ -1,17 +1,23 @@
-FROM maven:3.6.0-jdk-11-slim AS builder
-WORKDIR /home/app
-ADD src /home/app/src
-ADD pom.xml /home/app
-ADD .mvn /home/app/.mvn
-ADD mvnw /home/app
-ENV MAVEN_CONFIG ""
-RUN ./mvnw package
+FROM openjdk:14-jdk-alpine AS builder
+WORKDIR /workspace/app
 
-FROM azul/zulu-openjdk-alpine:11.0.7
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
-COPY --from=builder /home/app/target target
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+RUN ./mvnw verify clean --fail-never
+
+COPY src src
+
+RUN ./mvnw package -DskipTests
+
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+FROM openjdk:14-jdk-alpine
+RUN addgroup -S cases && adduser -S cases -G cases
+ARG DEPENDENCY=/workspace/app/target/dependency
+COPY --from=builder ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY --from=builder ${DEPENDENCY}/META-INF /app/META-INF
+COPY --from=builder ${DEPENDENCY}/BOOT-INF/classes /app
 ENV JAVA_OPTS=/opt/config/
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar app.jar" ]
+ENTRYPOINT ["java", "$JAVA_OPTS", "-cp","app:app/lib/*","com.trustpoint.cases.CasesApplication"]

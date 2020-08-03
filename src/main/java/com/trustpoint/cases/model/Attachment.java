@@ -1,9 +1,6 @@
 package com.trustpoint.cases.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -16,8 +13,10 @@ public class Attachment extends Model {
     @GeneratedValue
     private UUID id;
 
+    @NotNull
     private UUID caseID;
 
+    @Column(columnDefinition = "TEXT")
     private String Description = "";
 
     private String attachedBy = "";

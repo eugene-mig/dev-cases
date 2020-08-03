@@ -4,6 +4,8 @@ import com.trustpoint.cases.values.CaseState;
 import com.trustpoint.cases.values.CaseType;
 import com.trustpoint.cases.values.Priority;
 import com.trustpoint.cases.values.Step;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -34,6 +36,7 @@ public class Case extends Model {
 
     private Priority priority;
 
+    @Column(columnDefinition="TEXT")
     private String description = "";
 
     private Step step;
@@ -51,21 +54,29 @@ public class Case extends Model {
 
     private String relatedCaseID = "";
 
+    @Column(columnDefinition = "TEXT")
+    private String closingRemarks = "";
+
+    private String closedBy = "";
+
+    @DateTimeFormat
+    private Date closingDate;
+
     @NotEmpty
     private String customer;
 
-    @OneToMany(mappedBy = "caseID")
+    @OneToMany(mappedBy = "caseID", cascade = CascadeType.ALL)
     private List<Attachment> attachments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "caseID")
+    @OneToMany(mappedBy = "caseID", cascade = CascadeType.ALL)
     private List<Note> notes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "caseID")
+    @OneToMany(mappedBy = "caseID", cascade = CascadeType.ALL)
     private List<Alert> alerts = new ArrayList<>();
 
     public Case() {}
 
-    public Case(@NotBlank(message = "Case name cannot be empty") String name, @NotEmpty(message = "Case type cannot be empty") CaseType type, Date openingDate, Priority priority, String description, Step step, @NotEmpty(message = "Case owner cannot be empty") String owner, Long businessUnit, Long originalBusinessUnit, CaseState state, String internalReferenceCode, String relatedCaseID, String customer) {
+    public Case(@NotBlank(message = "Case name cannot be empty") String name, @NotEmpty(message = "Case type cannot be empty") CaseType type, Date openingDate, Priority priority, String description, Step step, String owner, Long businessUnit, Long originalBusinessUnit, CaseState state, String internalReferenceCode, String relatedCaseID, String customer) {
         if (openingDate != null) {
             this.openingDate = openingDate;
         } else {
@@ -226,5 +237,29 @@ public class Case extends Model {
 
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public String getClosingRemarks() {
+        return closingRemarks;
+    }
+
+    public void setClosingRemarks(String closingRemarks) {
+        this.closingRemarks = closingRemarks;
+    }
+
+    public String getClosedBy() {
+        return closedBy;
+    }
+
+    public void setClosedBy(String closedBy) {
+        this.closedBy = closedBy;
+    }
+
+    public Date getClosingDate() {
+        return closingDate;
+    }
+
+    public void setClosingDate(Date closingDate) {
+        this.closingDate = closingDate;
     }
 }
