@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
@@ -20,20 +21,14 @@ public class NoteController {
         this.noteService = service;
     }
 
-
     @PostMapping("notes")
     public Note addNote(@NotNull @RequestBody Note note, @RequestHeader("X-Subject") String author) {
         return noteService.addNote(note, author);
     }
 
-
-    @GetMapping("notes")
-    public List<Note> getNotes(@RequestParam(value = "case_id", required = false) UUID caseID) {
-        if (caseID != null) {
-            return noteService.getNotesByCaseID(caseID);
-        }
-
-        return noteService.getNotes();
+    @GetMapping("notes/{case_id}")
+    public List<Note> getNotes(@NotEmpty @PathVariable("case_id") UUID caseID) {
+        return noteService.getNotesByCaseID(caseID);
     }
 
     @DeleteMapping(path = "notes/{id}")
@@ -41,8 +36,8 @@ public class NoteController {
         return noteService.deleteNote(id);
     }
 
-    @GetMapping
-    public Note getNote(@PathVariable("id") UUID id) {
-        return noteService.findNoteByID(id).orElseThrow(() -> new ResourceNotFoundException("note not found"));
-    }
+//    @GetMapping
+//    public Note getNote(@PathVariable("id") UUID id) {
+//        return noteService.findNoteByID(id).orElseThrow(() -> new ResourceNotFoundException("note not found"));
+//    }
 }
