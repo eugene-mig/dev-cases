@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CaseService {
@@ -88,13 +89,11 @@ public class CaseService {
         }
 
         if (businessUnit != "") {
-            Long businessUnitID = Long.parseLong(businessUnit, 10);
-
             if (caseConfig.caseOwnerHasAccess() && owner != "") {
-                return repository.findAllByBusinessUnitOrOwner(businessUnitID, owner);
+                return repository.findAllByBusinessUnitInOrOwner(getBusinessUnitIDs(businessUnit), owner);
             }
 
-            return repository.findAllByBusinessUnit(businessUnitID);
+            return repository.findAllByBusinessUnitIn(getBusinessUnitIDs(businessUnit));
         }
 
         if (caseConfig.caseOwnerHasAccess() && owner != "") {
@@ -147,10 +146,17 @@ public class CaseService {
         }
 
         if (businessUnit != "") {
-            Long businessUnitID = Long.parseLong(businessUnit, 10);
-            return repository.findByIdAndBusinessUnit(id, businessUnitID);
+            return repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
         }
 
         return null;
+    }
+
+    List<Long> getBusinessUnitIDs(String bus) {
+        List<String> businessUnits = Arrays.asList(bus.split(","));
+        long[] businessUnitIDs = businessUnits.stream().mapToLong(Long::parseLong).toArray();
+        List<Long> businessUnitLongs = Arrays.stream(businessUnitIDs).boxed().collect(Collectors.toList());
+
+        return businessUnitLongs;
     }
 }

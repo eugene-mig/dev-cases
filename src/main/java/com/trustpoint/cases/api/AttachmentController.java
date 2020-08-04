@@ -31,12 +31,8 @@ public class AttachmentController {
         return attachmentService.deleteAttachment(id);
     }
 
-    @GetMapping("attachments")
-    public List<Attachment> listByCaseID(@RequestParam(value = "case_id", required = false) UUID caseID) {
-        if (caseID == null) {
-            return attachmentService.getAttachments();
-        }
-
+    @GetMapping("attachments/{case_id}")
+    public List<Attachment> listByCaseID(@NotEmpty @PathVariable("case_id") UUID caseID) {
         return attachmentService.listByCaseID(caseID);
     }
 }

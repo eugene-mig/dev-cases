@@ -11,8 +11,11 @@ import java.util.UUID;
 @Repository("postgres")
 public interface CaseRepository extends JpaRepository<Case, UUID> {
     List<Case> findAllByBusinessUnit(Long businessUnit);
+    List<Case> findAllByBusinessUnitIn(List<Long> businessUnits);
     List<Case> findAllByBusinessUnitOrOwner(Long businessUnit, String owner);
+    List<Case> findAllByBusinessUnitInOrOwner(List<Long> businessUnits, String owner);
     List<Case> findAllByOwner(String owner);
     Optional<Case> findByIdAndOwner(UUID id, String owner);
     Optional<Case> findByIdAndBusinessUnit(UUID id, Long BusinessUnit);
+    Optional<Case> findByIdAndBusinessUnitIn(UUID id, List<Long> businessUnits);
 }
