@@ -21,7 +21,6 @@ public class Alert extends Model {
     @NotNull
     private Long alertID;
 
-    @NotEmpty
     @Column(columnDefinition = "TEXT")
     private String description;
 
