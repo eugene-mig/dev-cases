@@ -1,12 +1,14 @@
 package com.trustpoint.cases.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +28,6 @@ import com.trustpoint.cases.repository.CaseRepository;
 import com.trustpoint.cases.repository.NoteRepository;
 import com.trustpoint.cases.values.CaseState;
 
-import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +46,6 @@ public class CaseService {
 		log.info("Adding case");
 		// TODO: run some further case validations
 		// TODO: run actions as transaction
-
 		Case createdCase = repository.save(new Case(newcase.getName(), newcase.getType(), newcase.getOpeningDate(),
 				newcase.getPriority(), newcase.getDescription(), newcase.getStep(), newcase.getOwner(),
 				newcase.getOriginalBusinessUnit(), // at creation business unit will be same as original business unit
@@ -74,14 +74,12 @@ public class CaseService {
 				ResponseEntity<String> resp = this.restTemplate.postForEntity(
 						caseConfig.getAlertsURI() + "/alerts/link/" + alert.getAlertID(), request, String.class);
 
-				log.trace("Response : {}", resp);
+				log.info("Response : {}", resp);
 
 				if (resp.getStatusCode().isError()) {
 					throw new OpsException("Failed to link alert");
 				}
-
 			}
-
 			createdCase.setAlerts(alerts);
 		}
 
@@ -95,7 +93,6 @@ public class CaseService {
 				Note savedNote = noteRepository.save(note);
 				notes.set(i, savedNote);
 			}
-
 			createdCase.setNotes(notes);
 		}
 
@@ -106,23 +103,17 @@ public class CaseService {
 		if (caseConfig.allowAccessIfUnassigned()) {
 			return repository.findAll();
 		}
-
-		if (StringUtils.isNotBlank(businessUnit)) {
-			Long businessUnitID = Long.parseLong(businessUnit, 10);
-
-			if (caseConfig.caseOwnerHasAccess() && StringUtils.isNotBlank(owner)) {
-				return repository.findAllByBusinessUnitOrOwner(businessUnitID, owner);
+		if (!businessUnit.equals("")) {
+			if (caseConfig.caseOwnerHasAccess() && !owner.equals("")) {
+				return repository.findAllByBusinessUnitInOrOwner(getBusinessUnitIDs(businessUnit), owner);
 			}
-
-			return repository.findAllByBusinessUnit(businessUnitID);
+			return repository.findAllByBusinessUnitIn(getBusinessUnitIDs(businessUnit));
 		}
-
-		if (caseConfig.caseOwnerHasAccess() && StringUtils.isNotBlank(owner)) {
+		if (caseConfig.caseOwnerHasAccess() && !owner.equals("")) {
 			return repository.findAllByOwner(owner);
 		}
-
 		return new ArrayList<>();
-	};
+	}
 
 	// TODO: apply case access to delete
 	public ResponseEntity<?> deleteCase(UUID id) {
@@ -147,12 +138,10 @@ public class CaseService {
 			found.setType(update.getType());
 			found.setOriginalBusinessUnit(update.getOriginalBusinessUnit());
 			found.setClosingRemarks(update.getClosingRemarks());
-
 			if (update.getState() == CaseState.CLOSED) {
 				found.setClosedBy(user);
 				found.setClosingDate(new Date());
 			}
-
 			return repository.save(found);
 		});
 	}
@@ -161,16 +150,19 @@ public class CaseService {
 		if (caseConfig.allowAccessIfUnassigned()) {
 			return repository.findById(id);
 		}
-
-		if (StringUtils.isNotBlank(owner) && caseConfig.caseOwnerHasAccess()) {
+		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {
 			return repository.findByIdAndOwner(id, owner);
 		}
-
-		if (StringUtils.isNotBlank(businessUnit)) {
-			Long businessUnitID = Long.parseLong(businessUnit, 10);
-			return repository.findByIdAndBusinessUnit(id, businessUnitID);
+		if (!businessUnit.equals("")) {
+			return repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
 		}
+		return Optional.empty();
+	}
 
-		return null;
+	List<Long> getBusinessUnitIDs(String bus) {
+		List<String> businessUnits = Arrays.asList(bus.split(","));
+		long[] businessUnitIDs = businessUnits.stream().mapToLong(Long::parseLong).toArray();
+		return Arrays.stream(businessUnitIDs).boxed().collect(Collectors.toList());
+
 	}
 }
