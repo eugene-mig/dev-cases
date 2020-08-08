@@ -30,8 +30,8 @@ public class CaseController {
     }
 
     @GetMapping
-    public List<Case> getCases(@NotEmpty @RequestHeader("X-Subject") String owner, @RequestHeader(value = "business-units", required = false) String businessUnits) {
-        return caseService.getCases(owner, businessUnits);
+    public List<Case> getCases(@NotEmpty @RequestHeader("X-Subject") String owner, @RequestHeader(value = "business-unit-id", required = false) String businessUnit) {
+        return caseService.getCases(owner, businessUnit);
     }
 
     @DeleteMapping(path = "{id}")
@@ -40,8 +40,8 @@ public class CaseController {
     }
 
     @GetMapping(path = "{id}")
-    public Case getPersonByID(@PathVariable("id") UUID id, @NotEmpty @RequestHeader("X-Subject") String owner, @RequestHeader(value = "business-units", required = false) String businessUnits) {
-        return caseService.getCaseByID(id, owner, businessUnits).orElse(null);
+    public Case getPersonByID(@PathVariable("id") UUID id, @NotEmpty @RequestHeader("X-Subject") String owner, @RequestHeader("business-unit-id") String businessUnit) {
+        return caseService.getCaseByID(id, owner, businessUnit).orElse(null);
     }
 
     @PutMapping(path = "{id}")
