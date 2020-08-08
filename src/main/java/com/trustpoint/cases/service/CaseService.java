@@ -103,7 +103,7 @@ public class CaseService {
 		if (caseConfig.allowAccessIfUnassigned()) {
 			return repository.findAll();
 		}
-		if (!businessUnit.equals("")) {
+		if (businessUnit != null && !businessUnit.equals("")) {
 			if (caseConfig.caseOwnerHasAccess() && !owner.equals("")) {
 				return repository.findAllByBusinessUnitInOrOwner(getBusinessUnitIDs(businessUnit), owner);
 			}
@@ -153,7 +153,7 @@ public class CaseService {
 		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {
 			return repository.findByIdAndOwner(id, owner);
 		}
-		if (!businessUnit.equals("")) {
+		if (businessUnit != null && !businessUnit.equals("")) {
 			return repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
 		}
 		return Optional.empty();
