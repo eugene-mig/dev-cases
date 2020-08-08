@@ -9,72 +9,72 @@ import java.util.UUID;
 @Entity
 @Table(name = "alerts")
 public class Alert extends Model {
-    @Id
-    @GeneratedValue
-    private UUID id;
+	@Id
+	@GeneratedValue
+	private UUID id;
 
-    private UUID caseID;
+	private UUID caseID;
 
-    @NotEmpty
-    private String alertType;
+	@NotEmpty
+	private String alertType;
 
-    @NotNull
-    private Long alertID;
+	@NotNull
+	private Long alertID;
 
-    @NotEmpty
-    @Column(columnDefinition = "TEXT")
-    private String description;
+	@Column(columnDefinition = "TEXT")
+	private String description;
 
-    @NotNull
-    private Date dateCreated;
+	@NotNull
+	private Date dateCreated;
 
-    public Alert() {}
+	public Alert() {
+	}
 
-    public String getAlertType() {
-        return alertType;
-    }
+	public String getAlertType() {
+		return alertType;
+	}
 
-    public void setAlertType(String alertType) {
-        this.alertType = alertType;
-    }
+	public void setAlertType(String alertType) {
+		this.alertType = alertType;
+	}
 
-    public Long getAlertID() {
-        return alertID;
-    }
+	public Long getAlertID() {
+		return alertID;
+	}
 
-    public void setAlertID(Long alertID) {
-        this.alertID = alertID;
-    }
+	public void setAlertID(Long alertID) {
+		this.alertID = alertID;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
+	public Date getDateCreated() {
+		return dateCreated;
+	}
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
 
-    public UUID getCaseID() {
-        return caseID;
-    }
+	public UUID getCaseID() {
+		return caseID;
+	}
 
-    public void setCaseID(UUID caseID) {
-        this.caseID = caseID;
-    }
+	public void setCaseID(UUID caseID) {
+		this.caseID = caseID;
+	}
 
-    public UUID getId() {
-        return id;
-    }
+	public UUID getId() {
+		return id;
+	}
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+	public void setId(UUID id) {
+		this.id = id;
+	}
 }
