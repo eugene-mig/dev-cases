@@ -3,16 +3,16 @@ package com.trustpoint.cases.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+//import org.springframework.http.HttpEntity;
+//import org.springframework.http.HttpHeaders;
+//import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -63,22 +63,22 @@ public class CaseService {
 				alerts.set(i, savedAlert);
 
 				// Link alert to Alerts module
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				Map<String, String> params = new HashMap<>();
-
-				params.put("caseId", createdCase.getId().toString());
-				params.put("actor", createdCase.getOwner());
-				HttpEntity<Map<String, String>> request = new HttpEntity<>(params, headers);
-
-				ResponseEntity<String> resp = this.restTemplate.postForEntity(
-						caseConfig.getAlertsURI() + "/alerts/link/" + alert.getAlertID(), request, String.class);
-
-				log.info("Response : {}", resp);
-
-				if (resp.getStatusCode().isError()) {
-					throw new OpsException("Failed to link alert");
-				}
+//				HttpHeaders headers = new HttpHeaders();
+//				headers.setContentType(MediaType.APPLICATION_JSON);
+//				Map<String, String> params = new HashMap<>();
+//
+//				params.put("caseId", createdCase.getId().toString());
+//				params.put("actor", createdCase.getOwner());
+//				HttpEntity<Map<String, String>> request = new HttpEntity<>(params, headers);
+//
+//				ResponseEntity<String> resp = this.restTemplate.postForEntity(
+//						caseConfig.getAlertsURI() + "/alerts/link/" + alert.getAlertID(), request, String.class);
+//
+//				log.info("Response : {}", resp);
+//
+//				if (resp.getStatusCode().isError()) {
+//					throw new OpsException("Failed to link alert");
+//				}
 			}
 			createdCase.setAlerts(alerts);
 		}
