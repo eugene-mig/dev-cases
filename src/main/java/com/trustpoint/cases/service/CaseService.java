@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.trustpoint.cases.config.CaseConfiguration;
-import com.trustpoint.cases.exception.OpsException;
+//import com.trustpoint.cases.exception.OpsException;
 import com.trustpoint.cases.exception.ResourceNotFoundException;
 import com.trustpoint.cases.model.Alert;
 import com.trustpoint.cases.model.Case;

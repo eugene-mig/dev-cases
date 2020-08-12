@@ -17,7 +17,7 @@ public class Attachment extends Model {
     private UUID caseID;
 
     @Column(columnDefinition = "TEXT")
-    private String Description = "";
+    private String description = "";
 
     private String attachedBy = "";
 
@@ -35,11 +35,11 @@ public class Attachment extends Model {
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        description = description;
     }
 
     public String getAttachedBy() {
