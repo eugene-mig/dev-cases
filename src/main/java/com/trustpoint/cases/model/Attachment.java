@@ -1,9 +1,7 @@
 package com.trustpoint.cases.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity(name="Attachment")
@@ -16,15 +14,13 @@ public class Attachment extends Model {
     @NotNull
     private UUID caseID;
 
-    @Column(columnDefinition = "TEXT")
-    private String description = "";
+    @Column(columnDefinition = "TEXT", name = "description")
+    private String desc = "";
 
     private String attachedBy = "";
 
     @NotNull
     private File file;
-
-    //    private List<Note> notes;
 
     public UUID getId() {
         return id;
@@ -32,14 +28,6 @@ public class Attachment extends Model {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        description = description;
     }
 
     public String getAttachedBy() {
@@ -64,5 +52,13 @@ public class Attachment extends Model {
 
     public void setCaseID(UUID caseID) {
         this.caseID = caseID;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }
