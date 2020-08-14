@@ -150,12 +150,15 @@ public class CaseService {
 		if (caseConfig.allowAccessIfUnassigned()) {
 			return repository.findById(id);
 		}
-		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {
-			return repository.findByIdAndOwner(id, owner);
-		}
+
 		if (businessUnit != null && !businessUnit.equals("")) {
 			return repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
 		}
+
+		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {
+			return repository.findByIdAndOwner(id, owner);
+		}
+
 		return Optional.empty();
 	}
 
