@@ -3,22 +3,16 @@ package com.trustpoint.cases.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-//import java.util.HashMap;
 import java.util.List;
-//import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-//import org.springframework.http.HttpEntity;
-//import org.springframework.http.HttpHeaders;
-//import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.trustpoint.cases.config.CaseConfiguration;
-//import com.trustpoint.cases.exception.OpsException;
 import com.trustpoint.cases.exception.ResourceNotFoundException;
 import com.trustpoint.cases.model.Alert;
 import com.trustpoint.cases.model.Case;
@@ -147,12 +141,16 @@ public class CaseService {
 	}
 
 	public Optional<Case> getCaseByID(UUID id, String owner, String businessUnit) {
+		log.info("getting case by id:", id);
+		log.info("current subject", owner);
+		log.info("business unit", businessUnit);
+
 		if (caseConfig.allowAccessIfUnassigned()) {
 			return repository.findById(id);
 		}
 
 		if (businessUnit != null && !businessUnit.equals("")) {
-			return repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
+			return repository.findByIdAndBusinessUnitInOrOwner(id, getBusinessUnitIDs(businessUnit), owner);
 		}
 
 		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {

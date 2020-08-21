@@ -23,5 +23,5 @@ public interface CaseRepository extends JpaRepository<Case, UUID> {
 
 	Optional<Case> findByIdAndBusinessUnit(UUID id, Long businessUnit);
 
-	Optional<Case> findByIdAndBusinessUnitIn(UUID id, List<Long> businessUnits);
+	Optional<Case> findByIdAndBusinessUnitInOrOwner(UUID id, List<Long> businessUnits, String owner);
 }
