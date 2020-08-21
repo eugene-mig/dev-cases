@@ -141,16 +141,19 @@ public class CaseService {
 	}
 
 	public Optional<Case> getCaseByID(UUID id, String owner, String businessUnit) {
-		log.info("getting case by id:", id);
-		log.info("current subject", owner);
-		log.info("business unit", businessUnit);
+		log.info("getting case by id: " + id.toString());
+		log.info("current subject " + owner);
+		log.info("business unit " + businessUnit);
 
 		if (caseConfig.allowAccessIfUnassigned()) {
 			return repository.findById(id);
 		}
 
 		if (businessUnit != null && !businessUnit.equals("")) {
-			return repository.findByIdAndBusinessUnitInOrOwner(id, getBusinessUnitIDs(businessUnit), owner);
+			Optional<Case> foundCase = repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
+			if (!foundCase.isEmpty()) {
+				return foundCase;
+			}
 		}
 
 		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {
