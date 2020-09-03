@@ -1,7 +1,5 @@
 #### Case Management Service
 Case Management service exposes an API for creating and managing cases. Its main functions are:
-
-####Case Management
 - Creating cases
 - Managing case attachments
 - Managing case comments and notes.
