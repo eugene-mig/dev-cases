@@ -1,6 +1,5 @@
 package com.trustpoint.cases.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +7,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.trustpoint.cases.dto.BusinessUnit;
+import com.trustpoint.cases.dto.CaseFilterPayload;
+import com.trustpoint.cases.dto.Permission;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -93,20 +95,22 @@ public class CaseService {
 		return createdCase;
 	}
 
-	public List<Case> getCases(String owner, String businessUnit) {
-		if (caseConfig.allowAccessIfUnassigned()) {
-			return repository.findAll();
-		}
-		if (businessUnit != null && !businessUnit.equals("")) {
-			if (caseConfig.caseOwnerHasAccess() && !owner.equals("")) {
-				return repository.findAllByBusinessUnitInOrOwner(getBusinessUnitIDs(businessUnit), owner);
-			}
-			return repository.findAllByBusinessUnitIn(getBusinessUnitIDs(businessUnit));
-		}
-		if (caseConfig.caseOwnerHasAccess() && !owner.equals("")) {
-			return repository.findAllByOwner(owner);
-		}
-		return new ArrayList<>();
+	public List<Case> getCases(CaseFilterPayload filter, String subject, List<Permission> permissions, BusinessUnit businessUnit) {
+//		if (caseConfig.allowAccessIfUnassigned()) {
+//			return repository.findAll();
+//		}
+//		if (businessUnit != null && !businessUnit.equals("")) {
+//			if (caseConfig.caseOwnerHasAccess() && !subject.equals("")) {
+//				return repository.findAllByBusinessUnitInOrOwner(getBusinessUnitIDs(businessUnit.getId()), subject);
+//			}
+//			return repository.findAllByBusinessUnitIn(getBusinessUnitIDs(businessUnit.getId()));
+//		}
+//		if (caseConfig.caseOwnerHasAccess() && !subject.equals("")) {
+//			return repository.findAllByOwner(subject);
+//		}
+//
+//		return new ArrayList<>();
+		return repository.findAll();
 	}
 
 	// TODO: apply case access to delete
@@ -141,26 +145,27 @@ public class CaseService {
 	}
 
 	public Optional<Case> getCaseByID(UUID id, String owner, String businessUnit) {
-		log.info("getting case by id: " + id.toString());
-		log.info("current subject " + owner);
-		log.info("business unit " + businessUnit);
-
-		if (caseConfig.allowAccessIfUnassigned()) {
-			return repository.findById(id);
-		}
-
-		if (businessUnit != null && !businessUnit.equals("")) {
-			Optional<Case> foundCase = repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
-			if (!foundCase.isEmpty()) {
-				return foundCase;
-			}
-		}
-
-		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {
-			return repository.findByIdAndOwner(id, owner);
-		}
-
-		return Optional.empty();
+		return repository.findById(id);
+//		log.info("getting case by id: " + id.toString());
+//		log.info("current subject " + owner);
+//		log.info("business unit " + businessUnit);
+//
+//		if (caseConfig.allowAccessIfUnassigned()) {
+//			return repository.findById(id);
+//		}
+//
+//		if (businessUnit != null && !businessUnit.equals("")) {
+//			Optional<Case> foundCase = repository.findByIdAndBusinessUnitIn(id, getBusinessUnitIDs(businessUnit));
+//			if (!foundCase.isEmpty()) {
+//				return foundCase;
+//			}
+//		}
+//
+//		if (!owner.equals("") && caseConfig.caseOwnerHasAccess()) {
+//			return repository.findByIdAndOwner(id, owner);
+//		}
+//
+//		return Optional.empty();
 	}
 
 	List<Long> getBusinessUnitIDs(String bus) {

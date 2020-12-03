@@ -4,8 +4,6 @@ import com.trustpoint.cases.values.CaseState;
 import com.trustpoint.cases.values.CaseType;
 import com.trustpoint.cases.values.Priority;
 import com.trustpoint.cases.values.Step;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -211,17 +209,6 @@ public class Case extends Model {
         return customer;
     }
 
-    public void setCustomer(String customer) {
-        this.customer = customer;
-    }
-
-    public List<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
-    }
 
     public List<Alert> getAlerts() {
         return alerts;
@@ -247,17 +234,10 @@ public class Case extends Model {
         this.closingRemarks = closingRemarks;
     }
 
-    public String getClosedBy() {
-        return closedBy;
-    }
-
     public void setClosedBy(String closedBy) {
         this.closedBy = closedBy;
     }
 
-    public Date getClosingDate() {
-        return closingDate;
-    }
 
     public void setClosingDate(Date closingDate) {
         this.closingDate = closingDate;
