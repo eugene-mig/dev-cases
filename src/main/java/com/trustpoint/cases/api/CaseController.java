@@ -35,12 +35,12 @@ public class CaseController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Case>> getAllCasesByFilter(@RequestBody CaseFilterPayload filter, @RequestHeader Map<String, String> headers) {
+	public ResponseEntity<List<Case>> getAllCasesByFilter(@RequestHeader Map<String, String> headers) {
 		try {
 			List<Permission> permissions = Utils.getRequestPermissions(headers);
 			BusinessUnit businessUnit = Utils.getRequestBusinessUnit(headers);
 			String user = Utils.getSubjectHeader(headers);
-			return ResponseEntity.ok(caseService.getCases(filter, user, permissions, businessUnit));
+			return ResponseEntity.ok(caseService.getCases(null, user, permissions, businessUnit));
 		} catch(Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.ok(Collections.emptyList());
