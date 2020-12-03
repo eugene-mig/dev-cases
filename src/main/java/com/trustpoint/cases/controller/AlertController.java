@@ -1,4 +1,4 @@
-package com.trustpoint.cases.api;
+package com.trustpoint.cases.controller;
 
 import com.trustpoint.cases.model.Alert;
 import com.trustpoint.cases.service.AlertService;

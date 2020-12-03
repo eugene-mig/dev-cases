@@ -23,9 +23,13 @@ public class CaseFilter implements Specification<Case> {
   public Predicate toPredicate(Root<Case> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
     List<Predicate> filterPredicates = new ArrayList<>();
 
-    if (!StringUtils.isEmpty(filters.getCustomerId())) {
-      Predicate customerIdFilter = builder.equal(root.get("customer"), filters.getCustomerId());
-      filterPredicates.add(customerIdFilter);
+    if (filters != null) {
+
+      if (!StringUtils.isEmpty(filters.getCustomerId())) {
+        Predicate customerIdFilter = builder.equal(root.get("customer"), filters.getCustomerId());
+        filterPredicates.add(customerIdFilter);
+      }
+
     }
 
     return builder.and(filterPredicates.toArray(new Predicate[filterPredicates.size()]));

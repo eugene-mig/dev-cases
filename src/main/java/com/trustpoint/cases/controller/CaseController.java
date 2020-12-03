@@ -1,4 +1,4 @@
-package com.trustpoint.cases.api;
+package com.trustpoint.cases.controller;
 
 import com.trustpoint.cases.common.Utils;
 import com.trustpoint.cases.dto.BusinessUnit;
@@ -34,7 +34,7 @@ public class CaseController {
 		return caseService.addCase(newcase);
 	}
 
-	@GetMapping
+	@PostMapping({"/list"})
 	public ResponseEntity<List<Case>> getAllCasesByFilter(@RequestBody(required = false) CaseFilterPayload filter, @RequestHeader Map<String, String> headers) {
 		try {
 			List<Permission> permissions = Utils.getRequestPermissions(headers);
