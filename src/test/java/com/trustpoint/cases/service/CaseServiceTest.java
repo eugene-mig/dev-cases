@@ -1,17 +1,15 @@
 package com.trustpoint.cases.service;
 
+import com.trustpoint.cases.dto.CasePayload;
 import com.trustpoint.cases.model.Case;
-import com.trustpoint.cases.values.CaseState;
 import com.trustpoint.cases.values.CaseType;
-import com.trustpoint.cases.values.Priority;
-import com.trustpoint.cases.values.Step;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Date;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @SpringBootTest
 public class CaseServiceTest {
@@ -19,23 +17,19 @@ public class CaseServiceTest {
     CaseService caseService;
 
     @Test
-    void itShouldAddNewCase() throws Exception {
-        Case newCase = new Case();
-        newCase.setId(UUID.randomUUID());
-        newCase.setName("Police report");
-        newCase.setOpeningDate(new Date());
-        newCase.setType(CaseType.General);
-        newCase.setStep(Step.IN_PROCESS);
-        newCase.setOwner("fanky5g@gmail.com");
-        newCase.setPriority(Priority.HIGH);
-        newCase.setState(CaseState.CREATED);
-        newCase.setBusinessUnit("");
-        newCase.setDescription("customer stole some cars");
+    void itShouldAddNewCase() {
+        Assertions.assertDoesNotThrow(() -> {
+            CasePayload newCase = new CasePayload();
+            newCase.setName("Police report");
+            newCase.setOpeningDate(LocalDateTime.now());
+            newCase.setType(CaseType.General);
+            newCase.setDescription("customer stole some cars");
 
-        Case createdCase = caseService.addCase(newCase);
-        Assert.assertNotNull(createdCase);
-        Assert.assertNotNull(createdCase.getId());
-        Assert.assertEquals(newCase.getName(), createdCase.getName());
+            Case createdCase = caseService.addCase(newCase, "fanky5g@gmail.com");
+            Assert.assertNotNull(createdCase);
+            Assert.assertNotNull(createdCase.getId());
+            Assert.assertEquals(newCase.getName(), createdCase.getName());
+        });
     }
 
     @Test

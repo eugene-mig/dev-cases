@@ -28,9 +28,38 @@ public class CaseServiceImpl implements CaseService {
   private final CaseRepository repository;
 
   @Override
-  public Case addCase(Case newcase) {
+  public Case addCase(CasePayload request, String user) throws Exception {
+    if (StringUtils.isEmpty(request.getName())) {
+      throw new Exception("Case name cannot be empty");
+    }
 
-    return null;
+    if (StringUtils.isEmpty(request.getCustomer())) {
+      throw new Exception("Customer cannot be empty");
+    }
+
+    // ?...should alerts be required for cases????
+//    if (request.getAlerts() == null || request.getAlerts().isEmpty()) {
+//      throw new Exception("Case must have at least one alert");
+//    }
+
+    Case _case = new Case();
+    _case.setId(UUID.randomUUID());
+    _case.setAlerts(request.getAlerts());
+    _case.setCustomer(request.getCustomer());
+    _case.setName(request.getName());
+    _case.setOwner(user);
+
+    // TODO: get customer business unit
+    _case.setBusinessUnit("");
+
+    List<Integer> includedAlertScores = new ArrayList<>(request.getAlerts()).stream().mapToInt(Alert::getScore).boxed().collect(Collectors.toList());
+    int maxScore = Collections.max(includedAlertScores);
+    _case.setScore(maxScore);
+    _case.setPriority(getCasePriority(maxScore));
+    _case.setType(request.getType());
+    _case.setNotes(request.getNotes());
+
+    return repository.save(_case);
   }
 
   @Override

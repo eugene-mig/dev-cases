@@ -15,9 +15,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,18 +33,15 @@ public class Case extends Model {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotBlank(message = "Case name cannot be empty")
     private String name;
 
-    @NotNull(message = "Case type cannot be empty")
     private CaseType type;
 
-    @DateTimeFormat
-    private Date openingDate;
+    private LocalDateTime openingDate;
 
     private Priority priority;
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition="text")
     private String description = "";
 
     private Step step;
@@ -59,6 +55,8 @@ public class Case extends Model {
     @Column(columnDefinition = "varchar(100)", name = "business_unit")
     private String businessUnit;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(16)")
     private CaseState state;
 
     private String internalReferenceCode = "";
