@@ -1,35 +1,40 @@
 package com.trustpoint.cases.controller;
 
-import com.trustpoint.cases.model.Alert;
-import com.trustpoint.cases.service.AlertService;
+import com.trustpoint.cases.dto.Alert;
+import com.trustpoint.cases.model.Case;
+import com.trustpoint.cases.service.CaseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "alerts")
+@RequiredArgsConstructor
 public class AlertController {
-    private AlertService alertService;
-
-    public AlertController(AlertService alertService) {
-        this.alertService = alertService;
-    }
+    private final CaseService caseService;
 
     @PostMapping
-    public Alert addAlert(@NotNull @RequestBody Alert alert) {
-        return alertService.addAlert(alert);
-    }
-
-    @GetMapping
-    public List<Alert> ListAlert(@RequestParam("case_id") UUID caseID) {
-        return alertService.getAlertsByCaseID(caseID);
+    public ResponseEntity<Case> addAlert(@NotNull @RequestBody Alert alert) {
+        try {
+            return ResponseEntity.ok(caseService.addAlert(alert));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping(path = "{alertID}")
-    public ResponseEntity<?> deleteAlert(@PathVariable("alertID") UUID alertID) {
-        return alertService.deleteAlert(alertID);
+    public ResponseEntity<?> deleteAlert(@PathVariable("alertID") String alertID) {
+        try {
+            return ResponseEntity.ok(caseService.deleteAlert(alertID));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/tocase")
+    public ResponseEntity<?> createCaseFromAlert() {
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,11 +1,18 @@
 package com.trustpoint.cases.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity(name="Attachment")
 @Table(name = "attachments")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Attachment extends Model {
     @Id
     @GeneratedValue
@@ -21,44 +28,4 @@ public class Attachment extends Model {
 
     @NotNull
     private File file;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getAttachedBy() {
-        return attachedBy;
-    }
-
-    public void setAttachedBy(String attachedBy) {
-        this.attachedBy = attachedBy;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public UUID getCaseID() {
-        return caseID;
-    }
-
-    public void setCaseID(UUID caseID) {
-        this.caseID = caseID;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 }

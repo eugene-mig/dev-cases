@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.trustpoint.cases.dto.AlertCaseRequest;
 import com.trustpoint.cases.dto.BusinessUnit;
 import com.trustpoint.cases.dto.CaseFilterPayload;
 import com.trustpoint.cases.dto.Permission;
+import com.trustpoint.cases.dto.Alert;
 import org.springframework.http.ResponseEntity;
 import com.trustpoint.cases.model.Case;
 
@@ -16,4 +18,7 @@ public interface CaseService {
 	ResponseEntity<?> deleteCase(UUID id);
 	Optional<Case> updateCase(UUID id, Case update, String user);
 	Optional<Case> getCaseByID(UUID id, String owner, String businessUnit);
+	Case createCaseFromAlert(AlertCaseRequest request) throws Exception;
+	Case addAlert(Alert alert) throws Exception;
+	Optional<Case> deleteAlert(String alertId);
 }
