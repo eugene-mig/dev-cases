@@ -1,13 +1,12 @@
 package com.trustpoint.cases.controller;
 
 import com.trustpoint.cases.common.Utils;
-import com.trustpoint.cases.dto.BusinessUnit;
-import com.trustpoint.cases.dto.CaseFilterPayload;
-import com.trustpoint.cases.dto.Permission;
+import com.trustpoint.cases.dto.*;
 import com.trustpoint.cases.exception.ResourceNotFoundException;
 import com.trustpoint.cases.model.Case;
 import com.trustpoint.cases.service.CaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
@@ -29,9 +28,14 @@ public class CaseController {
 	}
 
 	@PostMapping
-	public Case addCase(@Valid @NotNull @RequestBody Case newcase, @NotEmpty @RequestHeader("X-Subject") String owner) {
-		newcase.setOwner(owner);
-		return caseService.addCase(newcase);
+	public ResponseEntity<HTTPResponse> addCase(@Valid @RequestBody CasePayload casePayload, @RequestHeader Map<String, String> headers) {
+		try {
+			String user = Utils.getSubjectHeader(headers);
+			Case savedCase = caseService.addCase(casePayload, user);
+			return ResponseEntity.ok().body(new HTTPResponse(HttpStatus.OK, "", savedCase));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new HTTPResponse(HttpStatus.BAD_REQUEST, e.getMessage(), null));
+		}
 	}
 
 	@PostMapping({"/list"})

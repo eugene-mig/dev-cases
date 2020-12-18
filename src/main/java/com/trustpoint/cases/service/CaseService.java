@@ -4,16 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.trustpoint.cases.dto.AlertCaseRequest;
-import com.trustpoint.cases.dto.BusinessUnit;
-import com.trustpoint.cases.dto.CaseFilterPayload;
-import com.trustpoint.cases.dto.Permission;
-import com.trustpoint.cases.dto.Alert;
+import com.trustpoint.cases.dto.*;
 import org.springframework.http.ResponseEntity;
 import com.trustpoint.cases.model.Case;
 
 public interface CaseService {
-	Case addCase(Case newcase);
+	Case addCase(CasePayload newcase, String user) throws Exception;
 	List<Case> getCases(CaseFilterPayload filter, String subject, List<Permission> permissions, BusinessUnit businessUnit);
 	ResponseEntity<?> deleteCase(UUID id);
 	Optional<Case> updateCase(UUID id, Case update, String user);
