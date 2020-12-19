@@ -1,8 +1,10 @@
 package com.trustpoint.cases.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -15,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@JsonIgnoreProperties(value = {"_case"}, ignoreUnknown = true)
 public class Note extends Model {
     @Id
     @GeneratedValue
@@ -24,8 +27,10 @@ public class Note extends Model {
     @Column(columnDefinition="TEXT")
     private String body;
 
-    @NotNull
-    private UUID caseID;
+    @ManyToOne
+    @JoinColumn(name = "caseId", nullable = false)
+    @ToString.Exclude
+    private Case _case;
 
     @NotEmpty
     @Email

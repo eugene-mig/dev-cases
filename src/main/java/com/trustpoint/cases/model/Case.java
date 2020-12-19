@@ -17,12 +17,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-@Entity(name = "Case")
+@Entity
 @Table(name = "cases")
 @Data
 @AllArgsConstructor
@@ -35,18 +32,24 @@ public class Case extends Model {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(16)")
     private CaseType type;
 
     private LocalDateTime openingDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(16)")
     private Priority priority;
 
     @Column(columnDefinition="text")
     private String description = "";
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(16)")
     private Step step;
 
-    @Column(columnDefinition = "score")
+    @Column(name = "score")
     private int score;
 
     @Email()
@@ -74,11 +77,11 @@ public class Case extends Model {
     @NotEmpty
     private String customer;
 
-    @OneToMany(mappedBy = "caseID", cascade = CascadeType.ALL)
-    private List<Attachment> attachments = new ArrayList<>();
+    @OneToMany(mappedBy = "_case", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    private Set<Attachment> attachments;
 
-    @OneToMany(mappedBy = "caseID", cascade = CascadeType.ALL)
-    private List<Note> notes = new ArrayList<>();
+    @OneToMany(mappedBy = "_case", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    private Set<Note> notes;
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb", name = "alerts")

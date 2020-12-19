@@ -12,12 +12,14 @@ import com.trustpoint.cases.service.CaseService;
 import com.trustpoint.cases.values.CaseState;
 import com.trustpoint.cases.values.CaseType;
 import com.trustpoint.cases.values.Priority;
+import com.trustpoint.cases.values.Step;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,7 +59,7 @@ public class CaseServiceImpl implements CaseService {
     _case.setScore(maxScore);
     _case.setPriority(getCasePriority(maxScore));
     _case.setType(request.getType());
-    _case.setNotes(request.getNotes());
+    _case.setNotes(new HashSet<>(request.getNotes()));
 
     return repository.save(_case);
   }
@@ -149,13 +151,13 @@ public class CaseServiceImpl implements CaseService {
         for (AlertAttachment alertAttachment: request.getAttachments()) {
           Attachment attachment = new Attachment();
           attachment.setAttachedBy(alertAttachment.getUploadedBy());
-          attachment.setCaseID(_case.getId());
+          attachment.set_case(_case);
           attachment.setDesc(alertAttachment.getComment());
           attachment.setFile(alertAttachment.getFile());
           caseAttachments.add(attachment);
         }
 
-        _case.setAttachments(new ArrayList<>(caseAttachments));
+        _case.setAttachments(caseAttachments);
       }
 
       if (request.getNotes() != null) {
@@ -164,11 +166,11 @@ public class CaseServiceImpl implements CaseService {
           Note note = new Note();
           note.setBody(alertNote.getBody());
           note.setEnteredBy(alertNote.getAddedBy());
-          note.setCaseID(_case.getId());
+          note.set_case(_case);
           caseNotes.add(note);
         }
 
-        _case.setNotes(new ArrayList<>(caseNotes));
+        _case.setNotes(caseNotes);
       }
 
     } else {
@@ -181,6 +183,9 @@ public class CaseServiceImpl implements CaseService {
       _case.setScore(request.getAlertScore());
       _case.setPriority(getCasePriority(request.getAlertScore()));
       _case.setType(CaseType.valueOf(request.getCaseType()));
+      _case.setOpeningDate(LocalDateTime.now());
+      _case.setStep(Step.READY);
+      _case.setState(CaseState.OPEN);
 
       Set<Note> caseNotes = new HashSet<>();
       if (request.getNotes() != null) {
@@ -188,25 +193,25 @@ public class CaseServiceImpl implements CaseService {
           Note note = new Note();
           note.setBody(alertNote.getBody());
           note.setEnteredBy(alertNote.getAddedBy());
-          note.setCaseID(_case.getId());
+          note.set_case(_case);
           caseNotes.add(note);
         }
       }
 
-      _case.setNotes(new ArrayList<>(caseNotes));
+      _case.setNotes(caseNotes);
 
       if (request.getAttachments() != null) {
         Set<Attachment> caseAttachments = new HashSet<>();
         for (AlertAttachment alertAttachment: request.getAttachments()) {
           Attachment attachment = new Attachment();
           attachment.setAttachedBy(alertAttachment.getUploadedBy());
-          attachment.setCaseID(_case.getId());
+          attachment.set_case(_case);
           attachment.setDesc(alertAttachment.getComment());
           attachment.setFile(alertAttachment.getFile());
           caseAttachments.add(attachment);
         }
 
-        _case.setAttachments(new ArrayList<>(caseAttachments));
+        _case.setAttachments(caseAttachments);
       }
     }
 

@@ -37,6 +37,6 @@ public class AttachmentService {
     }
 
     public List<Attachment> listByCaseID(UUID caseID) {
-        return repository.findAttachmentsByCaseID(caseID);
+        return repository.findAttachmentBy_case(caseID);
     }
 }
