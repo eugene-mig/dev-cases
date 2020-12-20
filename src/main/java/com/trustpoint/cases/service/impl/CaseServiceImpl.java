@@ -129,7 +129,7 @@ public class CaseServiceImpl implements CaseService {
         throw new Exception("Customer ID is required");
       }
 
-      if (request.getCustomerId().equals(_case.getCustomer())) {
+      if (!request.getCustomerId().equals(_case.getCustomer())) {
         throw new Exception("Existing case customer does not match alert customer");
       }
 
